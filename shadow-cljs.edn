@@ -1,3 +1,4 @@
+;; TODO: Add release build folder separately
 {:source-paths ["src"]
  :dependencies [[binaryage/devtools "1.0.6"]
                 [nrepl "1.0.0"]
