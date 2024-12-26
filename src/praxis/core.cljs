@@ -4,9 +4,12 @@
    [reagent.core :as r]
    [reagent.dom :as d]))
 
-;; ----------------------
-;; Helper Functions
+;;; ----------------------
+;;; Helper Functions
+;; Some functions that are used all around the project,
+;; MAYBE: If it gets too big we need to break apart in a `libs` file.
 
+;; FIXME: Simplify documentation.
 (defn with-props
   "Transforms a map of CSS properties into a :style map, with special handling for CSS custom properties (variables).
 
@@ -37,6 +40,7 @@
                      (str "var(" v ")") v))]
     {:style (into {} (map (fn [[k v]] [k (wrap-var v)]) props))}))
 
+;; FIXME: Simplify documentation.
 (defn s!
   "A shorthand for `with-props` that allows optional CSS overrides. If no overrides are provided, it defaults to an empty map.
 
@@ -59,8 +63,19 @@
                   first
                   (or {}))))
 
-;; ------------------------
-;; Components
+;;; ------------------------
+;;; Default Styles
+;; NOTE: These are utterly unnecessary, here just for reference.
+;; Could be defined into the CSS stylesheet too.
+;; By having these here we can have the LSP index the styles on the autocomplete.
+;; NOTE: Notice we are using `Open-Props` for CSS variables.
+
+;;; ------------------------
+;;; Components
+;; TODO: Feat: Allow for CSS overrides on every Component.
+;; Components for `reagent` to use goes here for simplicity.
+;; There's no `hoisting` in Clojure, so account for that.
+;; Keep it as simple as possible so people can edit it later.
 
 (defn Spacer [css]
   [:hr (s! css)])
@@ -74,21 +89,24 @@
              :z-index "1000"}) "Nav"])
 
 (defn Footer []
-  [:footer (s! {:background "--gray-9"
-                :color "--gray-1"
-                :padding "--size-3"
-                :text-align "center"})])
+[:footer (s! {:background "--gray-9"
+              :color "--gray-1"
+              :padding "--size-3"
+              :text-align "center"})])
 
 (defn Button [inner]
-  [:button (s! {:background "--primary"
-                :color "--gray-1"
-                :padding "--size-3"
-                :border-radius "--radius-2"
-                :cursor "pointer"
-                :transition "background 0.3s ease"
-                :hover {:background "--primary-dark"}}) inner])
+[:button (s! {:background "--primary"
+              :color "--gray-1"
+              :padding "--size-3"
+              :border-radius "--radius-2"
+              :cursor "pointer"
+              :transition "background 0.3s ease"
+              :hover {:background "--primary-dark"}}) inner])
 
-(defn Main [& content]
+(defn Main
+  "TEMP: Main may change.
+  The bulk of the app goes inside this. "
+  [& content]
   [:main (s! {:max-width "800px"
               :margin "0 auto"
               :padding "--size-3"})
@@ -108,27 +126,34 @@
     "! Helps you with fasting days and keeps you updated "
     "on the Church's calendar."]])
 
-;; -------------------------
-;; Views
+;;; -------------------------
+;;; Views
+;; We really don't need routing for a landing page
+;; That said, if the day comes, here's where you may put it.
+;; For example: `App`, `Help`, `ContactUs` and so on...
+;; Put here ONLY if there's an HTML file other than index for it.
 
-(defn home-page []
+(defn App []
   [:div.main-container
    [Nav]
    [Main
-    [About {:color "--red-2"} ]
+    ;; TODO: Add missing components
     ;; [Downloads]
-    ;; [Links]
-    ;; []
+    ;; [Links/Collaborate]
+    ;; [Features]
+    ;; [Banner]
+
+    [About {:color "--red-12"} ]
     [:h1 "Funny"]
     [:p "Content"] ]
    [Footer]])
 
-;; -------------------------
-;; Initialize app
+;;; -------------------------
+;;; Initialize app
+;; MAYBE: Document this bit?
 
 (defn mount-root []
-  (d/render [home-page
-             {:gibberish (js/Date.now)}]
+  (d/render [App {:gibberish (js/Date.now)}] ; Ensures hot-reload as the app grows.
             (.getElementById js/document "app")))
 
 (defn ^:export init! []
