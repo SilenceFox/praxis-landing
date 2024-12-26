@@ -69,6 +69,16 @@
 ;; Could be defined into the CSS stylesheet too.
 ;; By having these here we can have the LSP index the styles on the autocomplete.
 ;; NOTE: Notice we are using `Open-Props` for CSS variables.
+(def primary-bg {:background-color "--stone-12"})
+(def primary-fg {:color "--stone-1"})
+(def primary (merge primary-fg primary-bg))
+
+(def accent {:color "--blue-3"})
+(def button primary-fg)
+
+(def secondary-bg {:background-color "--stone-11"})
+(def secondary-fg {:color "--stone-11"})
+(def secondary (merge secondary-bg secondary-fg))
 
 ;;; ------------------------
 ;;; Components
@@ -78,8 +88,11 @@
 ;; Keep it as simple as possible so people can edit it later.
 
 (defn Spacer [css]
-  [:hr (s! css)])
-
+  [:hr (s! (merge {:margin "8px 0px" ;defaults
+                   :height 2
+                   :box-shadow "--shadow-1"}
+                  ;; Overrides by the caller
+                  css))])
 (defn Nav []
   [:nav (s! {:background "--gray-5"
              :padding "--size-3"
